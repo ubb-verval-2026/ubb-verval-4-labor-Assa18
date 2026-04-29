@@ -98,7 +98,11 @@ public class PersonPageTests
     }
 
     [Test]
-    public void Person_SalaryIncrease_ShouldIncrease()
+    [TestCase(0)]
+    [TestCase(1)]
+    [TestCase(5)]
+    [TestCase(100)]
+    public void Person_SalaryIncrease_ShouldIncrease(double value)
     {
         // Arrange
         driver.Navigate().GoToUrl(BaseURL);
@@ -107,8 +111,11 @@ public class PersonPageTests
         var wait = new WebDriverWait(driver, TimeSpan.FromSeconds(5));
 
         var input = wait.Until(ExpectedConditions.ElementExists(By.XPath("//*[@data-test='SalaryIncreasePercentageInput']")));
+        var salaryLabel = wait.Until(ExpectedConditions.ElementExists(By.XPath("//*[@data-test='DisplayedSalary']")));
+        double actualSalary = double.Parse(salaryLabel.Text);
+        var expectedSalary = actualSalary + value / 100 * actualSalary;
         input.Clear();
-        input.SendKeys("5");
+        input.SendKeys(value.ToString());
 
         // Act
         var submitButton = wait.Until(ExpectedConditions.ElementExists(By.XPath("//*[@data-test='SalaryIncreaseSubmitButton']")));
@@ -116,9 +123,8 @@ public class PersonPageTests
 
 
         // Assert
-        var salaryLabel = wait.Until(ExpectedConditions.ElementExists(By.XPath("//*[@data-test='DisplayedSalary']")));
         var salaryAfterSubmission = double.Parse(salaryLabel.Text);
-        salaryAfterSubmission.Should().BeApproximately(5250, 0.001);
+        salaryAfterSubmission.Should().BeApproximately(expectedSalary, 0.001);
     }
     private bool IsElementPresent(By by)
     {
