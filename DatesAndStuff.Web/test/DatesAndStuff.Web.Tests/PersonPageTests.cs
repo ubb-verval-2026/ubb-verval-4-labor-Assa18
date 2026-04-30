@@ -149,6 +149,40 @@ public class PersonPageTests
         errorMessageTop.Should().NotBeNull();
         errorMessageBottom.Should().NotBeNull();
     }
+
+    [Test]
+    public void Flights_MexicoCity_To_Dublin_ShouldHaveAtLeast3Results()
+    {
+        driver.Navigate().GoToUrl("https://blazedemo.com/");
+        
+        var wait = new WebDriverWait(driver, TimeSpan.FromSeconds(10));
+
+        var fromPortElement = wait.Until(ExpectedConditions.ElementIsVisible(By.Name("fromPort")));
+
+        var toPortElement = wait.Until(ExpectedConditions.ElementIsVisible(By.Name("toPort")));
+        
+        
+        var fromPort = new SelectElement(fromPortElement);
+        var toPort = new SelectElement(toPortElement);
+
+        fromPort.SelectByText("Mexico City");
+        toPort.SelectByText("Dublin");
+        
+        var findFlightsButton = wait.Until(ExpectedConditions.ElementExists(By.CssSelector("input[type='submit']")));
+        
+        findFlightsButton.Click();
+        
+        wait.Until(SeleniumExtras.WaitHelpers.ExpectedConditions.ElementIsVisible(
+            By.XPath("//h3[contains(text(),'Flights from Mexico City to Dublin')]")));
+
+        var rows = wait.Until(driver =>
+        {
+            var elements = driver.FindElements(By.CssSelector("table.table tbody tr"));
+            return elements.Count >= 3 ? elements : null;
+        });
+
+        rows.Count.Should().BeGreaterThanOrEqualTo(3);
+    }
     
     private bool IsElementPresent(By by)
     {
