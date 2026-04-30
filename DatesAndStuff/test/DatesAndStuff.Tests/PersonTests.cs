@@ -1,5 +1,6 @@
 ﻿using AutoFixture;
 using FluentAssertions;
+using NUnit.Framework.Legacy;
 
 namespace DatesAndStuff.Tests;
 
@@ -52,7 +53,7 @@ public class PersonTests
         try { task.Wait(); } catch { }
 
         // Assert
-        Assert.IsTrue(task.IsFaulted);
+        ClassicAssert.IsTrue(task.IsFaulted);
     }
 
     [Test]
