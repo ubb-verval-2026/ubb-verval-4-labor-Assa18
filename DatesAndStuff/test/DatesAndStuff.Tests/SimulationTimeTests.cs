@@ -1,3 +1,5 @@
+using NUnit.Framework.Legacy;
+
 namespace DatesAndStuff.Tests
 {
     public sealed class SimulationTimeTests
@@ -71,7 +73,7 @@ namespace DatesAndStuff.Tests
 
                 // Assert
                 var expectedDateTime = baseDate + ts;
-                Assert.AreEqual(expectedDateTime, result.ToAbsoluteDateTime());
+                ClassicAssert.AreEqual(expectedDateTime, result.ToAbsoluteDateTime());
             }
 
             [Test]
